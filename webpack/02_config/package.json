@@ -1,0 +1,16 @@
+{
+  "name": "02_config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack webpack.dev.config.js build.js",
+    "prod": "webpack webpack.prod.config.js build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^3.12.0"
+  }
+}
