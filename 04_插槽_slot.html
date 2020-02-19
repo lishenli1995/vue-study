@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        
+    </div>
+
+    <script>
+        // 父组件
+        var P = {
+            template: `
+            <div>
+                父组件
+                <br>
+                非具名插槽:<br>
+                <slot></slot>
+                <br>
+                具名插槽:<br>
+                <slot name="a"></slot>
+                <slot name="b"></slot>
+            </div>
+            `
+        }
+
+        new Vue({
+            el: '#app',
+            template:`<P>
+                    <h1>非具名插槽内容</h1>
+
+                    <h1 slot="a">具名插槽内容a1</h1>
+                    <h1 slot="b">具名插槽内容b</h1>
+                    <h1 slot="a">具名插槽内容a2</h1>
+                </P>`,
+            data: function() {
+                return {
+                }
+            },
+            components: {
+                P
+            }
+        })
+    </script>
+</body>
+</html>

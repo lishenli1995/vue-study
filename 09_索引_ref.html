@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+    </div>
+
+    <script>
+
+        // 父组件
+        var P = {
+            template: `
+            <div>
+                <button ref='b1'>b1</button>
+                <button ref='b2'>b2</button>
+                <button ref='b3'>b3</button>
+                <div id="data"></div>
+            </div>
+            `,
+            mounted() {
+                let b1 = this.$refs.b1;
+                let b2 = this.$refs.b2;
+                let b3 = this.$refs.b3;
+                document.querySelector('#data').innerHTML = 
+                `
+                ${typeof b1}
+                ${typeof b2}
+                ${typeof b3}
+                `;
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            template:`<P />`,
+            data: function() {
+                return {
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+                P
+            },
+            
+        })
+    </script>
+</body>
+</html>

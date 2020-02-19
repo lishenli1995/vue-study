@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+    </div>
+
+    <script>
+        // 父组件
+        // 本文框输入, 按enter
+        // 自动计算数量
+        var P = {
+            template: `
+            <div>
+                父组件<br>
+                <input type="text" v-model="msg" @keyup.enter='addData'/>
+                <ul>
+                    <li v-for="val in data" :key='val'>
+                        {{val}}
+                    </li>
+                    <li>数量: {{count}}</li>
+                    <li>get set的数量: {{computedCount}}</li>
+                </ul>
+                
+                <slot></slot>
+            </div>
+            `,
+            data() {
+                return {
+                    msg: '',
+                    data: [],
+                }
+            },
+            created() {
+                this.data = ['aa', 'bb', 'cc'];
+            },
+            computed: {
+                count() {
+                    return this.data.length;
+                },
+                computedCount: {
+                    set(newV) {
+                        this.count = 999;
+                    },
+                    get() {
+                        return this.count; // 返回的是computed中的count()的返回值
+                    }
+                }
+            },
+            methods: {
+                addData() {
+                    this.data.push(this.msg);
+                    this.msg = '';
+                }
+            },
+            watch: {
+                msg(newValue, oldValue) {
+                    if (newValue === 'watch') {
+                        document.querySelector('#watch').innerHTML = '监听到了';
+                    }
+                }
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            template:`<P>
+                    <div id="watch"></div>
+                </P>`,
+            data: function() {
+                return {
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+                P
+            },
+            
+        })
+    </script>
+</body>
+</html>
