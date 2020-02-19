@@ -5,6 +5,13 @@
 ### 全局组件
 
 ## 2 lifecycle-生命周期
+### 插槽
+### 过滤器
+### 监听
+### 计算属性、get、set
+### 索引
+### nextTick
+
 ## 3 vue-router-路由
 ## 4 server-服务端
 ## 5 webpack
