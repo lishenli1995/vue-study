@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+
+    <script>
+        // 子组件
+        var C = {
+            template: `
+            <div>
+                我是子，数据为:
+                <br>
+                {{ info }}
+            </div>`,
+            data() {
+                return {
+                }
+            },
+            methods: {
+
+            },
+            props: ['info']
+
+        }
+
+        // 父组件
+        var P = {
+            template: `
+            <div>
+                我是父
+                <C :info="msg"></C>
+            </div>
+            `,
+            data() {
+                return {
+                    msg: '父传给子的数据'
+                }
+            },
+            components: {
+                C
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            template: `<P></P>`,
+            data: function () {
+                return {
+                    msg: '',
+                }
+            },
+            components: {
+                P
+            }
+        })
+    </script>
+</body>
+
+</html>
