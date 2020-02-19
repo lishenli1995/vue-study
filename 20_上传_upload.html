@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <!-- 引入axios-->
+    <script src="axios.js"></script>
+</head>
+<body>
+    <div id="app">
+
+    </div>
+
+    <script>
+        /**
+            先在根目录下执行命令：node server.js
+            开启服务端程序，成功，则打印 '服务器启动在8888端口'         
+         */
+        
+        // 将axios绑定到Vue对象上
+        Vue.prototype.$axios = axios;
+
+        // 根组件
+        var App = {
+            template: `
+            <div>
+                上传进度: {{ rate }}%
+                <input type='file' name='file' @change='changeHandler'>
+                <br>
+                <button @click='doSend'>上传</button>
+                <button @click='doCancel'>取消</button>
+                <button @click='doAgain'>继续</button>
+                <div id='data'>
+
+                </div>
+            </div>
+            `,
+            created() {
+                this.$axios.defaults.baseURL = 'http://localhost:8888/';
+            },
+            data() {
+                return {
+                    file: null,
+                    rate: 0,
+                    source: null,
+                    loaded: 0
+                }
+            },
+            methods: {
+                changeHandler(e) {
+                    this.file = e.target.files[0];
+                },
+                doSend() {
+                    var fd = new FormData();
+                    var CancelToken = this.$axios.CancelToken;
+                    var source = CancelToken.source();
+                    this.source = source;
+
+                    fd.append('file', this.file);
+                    this.$axios.post('upload', fd, {
+                        cancelToken: source.token,
+
+                        onUploadProgress: (progressEvent) => {
+                            this.loaded = progressEvent.loaded;
+                            var progress = (progressEvent.loaded / progressEvent.total) * 100;
+                            this.$nextTick(() => {
+                                this.rate = Math.ceil(progress);
+                            })
+                        }
+                    })
+                    .then(res => console.log(res))
+                    .catch(err => console.log(err));
+                },
+                doCancel() {
+                    this.source.cancel('取消请求!');
+                },
+                doAgain() {
+                    var fileData = this.file.slice(this.loaded, this.file.size);
+                    var fd = new FormData();
+                    fd.append('file', fileData);
+                    var CancelToken = this.$axios.CancelToken;
+                    var source = CancelToken.source();
+                    this.source = source;
+                    this.$axios.post('upload', fd, {
+                        cancelToken: source.token,
+                        onUploadProgress: (progressEvent) => {
+                            this.loaded += progressEvent.loaded;
+                            var progress = (this.loaded / progressEvent.total) * 100;
+                            this.$nextTick(() => {
+                                this.rate = Math.ceil(progress);
+                            })
+                        }
+                    })
+                }
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            template:`<App />`,
+            data: function() {
+                return {
+
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+                App
+            }
+        })
+    </script>
+</body>
+</html>

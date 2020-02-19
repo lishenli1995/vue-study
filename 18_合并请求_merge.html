@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <!-- 引入axios-->
+    <script src="axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+
+    <script>
+        /**
+            先在根目录下执行命令：node server.js
+            开启服务端程序，成功，则打印 '服务器启动在8888端口'         
+         */
+        // 将axios绑定到Vue对象上
+        Vue.prototype.$axios = axios;
+
+        // 根组件
+        var App = {
+            template: `
+            <div>
+                <button @click='doSend'>发送</button>
+                <div id='data1'>
+                </div>
+                <br>
+                <div id='data2'>
+                </div>
+            </div>
+            `,
+            methods: {
+                doSend() {
+                    this.$axios.defaults.baseURL = 'http://localhost:8888/';
+
+                    var req1 = this.$axios.get('');
+                    var req2 = this.$axios.post('test', 'id=1');
+                    this.$axios.all([req1, req2])
+                        .then(this.$axios.spread((res1, res2) => {
+                            document.querySelector('#data1').innerHTML = "succss: <br>" + JSON.stringify(res1);
+                            document.querySelector('#data2').innerHTML = "succss: <br>" + JSON.stringify(res2);
+                        }))
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            template: `<App />`,
+            data: function () {
+                return {
+
+                }
+            },
+            methods: {
+
+            },
+            components: {
+                App
+            }
+        })
+    </script>
+</body>
+
+</html>

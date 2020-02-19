@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <!-- 引入axios-->
+    <script src="axios.js"></script>
+    <style type="text/css">
+        .data {
+            border: 1px solid red;
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+    </div>
+
+    <script>
+        /**
+            先在根目录下执行命令：node server.js
+            开启服务端程序，成功，则打印 '服务器启动在8888端口'         
+         */
+
+        // 根组件
+        var App = {
+            template: `
+            <div>
+                <div class='data' v-show='isShow'>拦截成功</div>
+
+                <button @click='doSend'>发送</button>
+                <div id='data'>
+
+                </div>
+            </div>
+            `,
+            data() {
+                return {
+                    isShow : false,
+                }
+            },
+            methods: {
+                doSend() {
+                    // 拦截器
+                    this.$axios.interceptors.request.use((config) => {
+                    console.log(config);
+                    var token = localStorage.getItem('token');
+                    if (token) {
+                        config.headers['token'] = token;
+                    }
+                    this.isShow = true;
+                    return config;
+
+                }, function(error) {
+                    return Promise.reject(error);
+                });
+
+                this.$axios.interceptors.response.use((response) => {
+                    if (response.data.token) {
+                        localStorage.setItem('token', response.data.token);
+                    }
+                    this.isShow = false;
+                    return response;
+                }, function(error) {
+                    return Promise.reject(error);
+                });
+
+                    this.$axios.get('http://127.0.0.1:8888/')
+                    .then(res => {
+                        console.log(res);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                }
+            }
+        }
+
+        // 将axios绑定到Vue对象上
+        Vue.prototype.$axios = axios;
+
+        new Vue({
+            el: '#app',
+            template:`<App />`,
+            data() {
+                return {
+
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+                App
+            }
+        })
+    </script>
+</body>
+</html>
