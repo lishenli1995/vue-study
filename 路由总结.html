@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+<body>
+    <div id="app">
+    </div>
+
+    <script>
+        // 1 使用插件
+        Vue.use(VueRouter);
+
+        // 2 定义组件
+        var Home = {
+            template: `
+            <div>
+                主页<br>
+                <router-link :to='{name: "login"}'>登录</router-link>
+                <router-link :to='{name: "type", params: {id: "front"}}'>前端</router-link>
+                <router-link :to='{name: "type", params: {id: "android"}}'>安卓</router-link>
+                <router-view></router-view>
+            </div>
+            `
+        }
+
+        var Login = {
+            template: `
+            <div>
+                <input type='text' v-model='name' /><br>
+                <input type='text' v-model='password' /><br>
+                <input type='button' value='登录' @click='doLogin'/>
+            </div>
+            `,
+            data() {
+                return {
+                    name: '',
+                    password: ''
+                }
+            },
+            methods: {
+                doLogin() {
+                    localStorage.setItem('user', {name: this.name, password: this.password});
+                    this.$router.push({path: '/type/front'});
+                }
+            }
+        }
+
+        // 动态路由组件
+        var Type = {
+            template: `
+            <div>
+                {{ msg }}
+                <button @click='doLogout'>退出</button>
+            </div>
+            `,
+            data() {
+                return {
+                    msg: ''
+                }
+            },
+            created() {
+                this.msg = 'front';
+            },
+            methods: {
+                doLogout() {
+                    localStorage.removeItem('user');
+                    this.$router.push('/login')
+                }
+            },
+            watch: {
+                '$route' (to, from) {
+                    this.msg = to.params.id;
+                }
+            }
+        }
+
+        // 根组件
+        var App = {
+            template: `
+            <div>
+                <router-link to='/home'>主页</router-link>
+                <router-view></router-view>
+            </div>
+            `
+        }
+
+        // 3 定义路由对象
+        var router = new VueRouter({
+            routes: [
+                {
+                    path: '/home',
+                    component: Home,
+                    children: [
+                        {
+                            path: '/login',
+                            component: Login,
+                            name: 'login'
+                        },
+                        {
+                            path: '/type/:id',
+                            component: Type,
+                            name: 'type',
+                            meta: {
+                                auth: true
+                            }
+                        },
+                    ]
+                }
+            ]
+        });
+
+        // 导航守卫
+        router.beforeEach((to, from, next) => {
+            if (to.meta.auth) {
+                if (localStorage.getItem('user')) {
+                    next()
+                } else {
+                    next('/login');
+                }
+            } else {
+                next();
+            }
+        });
+
+        // vue对象
+        new Vue({
+            el: '#app',
+            template:`<App />`,
+            router, // 4 开启路由
+            data: function() {
+                return {
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+               App 
+            }
+        })
+    </script>
+</body>
+</html>

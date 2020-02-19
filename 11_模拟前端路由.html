@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <a href="#/login">登录</a>
+    <a href="#/reg">注册</a>
+
+    <div id="app"></div>
+
+    <script>
+        /*
+        传统路由：输入url，点击发送请求，返回数据。可能会因为延迟导致页面加载过慢，出现白屏
+        前端路由：通过锚点hash路由，不会出现卡死，会在合适情况下ajax
+        */
+       var app = document.querySelector('#app');
+        window.onhashchange = () => {
+            let hashValue = location.hash;
+            switch(hashValue) {
+                case '#/login':
+                    app.innerHTML = '登录成功';
+                    break;
+                case '#/reg':
+                    app.innerHTML = '注册成功';
+                    break;
+                default: break;
+            }
+        }
+        
+    </script>
+</body>
+</html>

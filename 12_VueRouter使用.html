@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{ msg }}
+    </div>
+
+    <script>
+        // 1 vue-router通过插件方式使用
+        Vue.use(VueRouter);
+        /** vue-router源码
+            if (inBrowser && window.Vue) {
+                window.Vue.use(VueRouter);
+            }
+            在浏览器中可以省略 Vue.use(VueRouter); 这一行
+         */
+
+        // 2 声明组件
+        var Login = {
+            template: `
+            <div>
+                登录
+            </div>
+            `
+        }
+
+        var Reg = {
+            template: `
+            <div>
+                注册
+            </div>
+            `
+        }
+
+        // 3 根组件
+        var App = {
+            template: `
+            <div>
+                <router-link to='/login'>登录</router-link>
+                <router-link to='/reg'>注册</router-link>
+                <router-view></router-view>
+            </div>
+            `
+        }
+
+        // 4 路由对象
+        var router = new VueRouter({
+            routes: [
+                {
+                    path: '/login',
+                    component: Login
+                },
+                {
+                    path: '/reg',
+                    component: Reg
+                },
+            ]
+        })
+
+        new Vue({
+            el: '#app',
+            template:`<App />`,
+            router: router,
+            data: function() {
+                return {
+                }
+            },
+            methods: {
+                
+            },
+            components: {
+                App
+            }
+        })
+    </script>
+</body>
+</html>
